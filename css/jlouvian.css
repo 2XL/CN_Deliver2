@@ -4,13 +4,15 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 /* 
-    Created on : 04/03/2015, 19:35:21
+    Created on : 04/04/2015, 03:03:34
     Author     : anna
 */
 
-
-#content {
-
-  margin: 100px;
+.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
 }
-
+.link {
+    stroke: #999;
+    stroke-opacity: .6;
+}

@@ -15,3 +15,19 @@ We do not expect the partitions you obtain to be equal to the real ones or betwe
 Documentation
 
 There is no need to elaborate a detailed documentation for these practical exercises, we just need the code, data, results and plots. You may just put the corresponding files with easy-to-identify names, distributed in folders if necessary. If you prefer to put all this information also in a single documentation file, that's OK, but avoid long texts.
+
+
+----
+
+
+	    igraph library:
+
+7 community detection algorithms (including those mentionned above):
+    Edgebetweenness (Girvan-Newman link centrality-based approach),
+    Walktrap (Pons-Latapy random walk-based approach),
+    Leading Eigenvectors (Newman's spectral approach),
+    Fast Greedy (Clauset et. al modularity optimization),
+    Label Propagation (Raghavan et. al),
+    Louvain (Blondel et. al, modularity optimization),
+    Spinglass (Reichardt-Bornholdt, modularity optimization),
+    InfoMap (Rosvall-Bergstrom, compression-based approach).
