@@ -36,6 +36,7 @@ and open the template in the editor.
 	<div id="content_wrapper">
 	    <input class="btn btn-warning" type="button" value="Reset" id='reset_btn' />  
 	    <input class="btn btn-success" type="button" value="Run Community Detection" id='comm_detect' />
+	    <div id="selectData"></div>
 	</div> 
 
 
@@ -50,14 +51,15 @@ and open the template in the editor.
 	    // TODO 1 --> parse pajek.net to JSON
 	    var node_data;
 	    var edge_data;
-	    var jsonData = {
+	    var jsonData;
+	    var jsonFormat = {
 		nodes: [],
 		edges: [{
 			source: 1,
 			target: 0,
 			weight: 1.0
 		    }]
-	    };
+	    }
 	    // els nodes poden començar desde 0...
 
 	    //Original node and edge data 
@@ -102,22 +104,77 @@ and open the template in the editor.
 
 
 
+
 	    // TODO: list files form directory 
+	    // todo mongodb
+	    // by definition require async connections
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	    // TODO: parse files from .net to JSON then render
+
+
+
+
+
 	    // LOAD files.net
-	    var fileName = "real/"
-	    var filePath = "../data/networks/"+fileName;
+	    var fileName = "real/dolphins.net";
+	    var filePath = "../data/networks/" + fileName;
+
+
+	    loadNET(filePath, function (data) {
+		jsonData = pajekToJSON(data);
+		console.log(jsonData);
+	    });
+
+
+
+
+	    var select = document.getElementById("selectData");
+	    // TODO: FileSystemAPIs
+
+
 
 
 
 	    var loading = setInterval(function () {
-		if (node_data === undefined || edge_data === undefined)
+		if (node_data === undefined || edge_data === undefined || jsonData === undefined)
 		    console.log("Loading...");
 		else {
 		    console.log("Loaded!");
-		  //  console.log(node_data, edge_data);
-		    draw(node_data, edge_data);
+		    if (true) {
+			console.log(node_data, edge_data);
+			console.log(jsonData);
+			node_data = jsonData.Vertices.map(function (item, idx, all) {
+			    return(item);
+			});
+			edge_data = jsonData.Edges;
+			console.log(node_data, edge_data);
+
+			// draw(node_data, edge_data);
+		    } else {
+			console.log(node_data, edge_data);
+			draw(node_data, edge_data);
+		    }
+
+
+
+
 		    clearInterval(loading);
 		}
 	    }, 1000);

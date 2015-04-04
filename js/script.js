@@ -5,18 +5,56 @@
  */
 
 
-function pajekToJSON(dir) {
-    var json;
+function pajekToJSON(str) {
 
-    // dir is the path of the file.net
+    console.log({data: str});
+    var list = str.split("\n");
+
+    var json = {};
+    var section = "";
+
+    var patt = /^[0-9].*$/
+    for (var key in list) {
+	if (list[key].search(patt) !== -1) {
+	    // console.log(list[key])
+	    var line = list[key].match(/\S+/g);
+	    switch (section) {
+		case "Vertices":
+		    json[section].push(parseInt(line[0]));
+		    break;
+		case "Edges":
+		    var edge = {
+			source: parseInt(line[0]),
+			target: parseInt(line[1]),
+			weight: parseInt(line[2])
+		    };
+		    json[section].push(edge);
+		    console.log(edge);
+		    break;
+		default :
+		    console.log("unhandled: " + section);
+		    break;
+	    }
+	} else {
+	    if (list[key] !== "") {
+		section = list[key].match(/[A-z]+/)[0];
+		console.log({data: section});
+		console.log(json);
+		json[section] = [];
+	    }
+
+	}
+    }
 
 
 
-
-    // format
-    // param -> values
+// dir is the path of the file.net
 
 
+return json;
+
+// format
+// param -> values 
 }
 
 // haha aixo o Jquery en una linea...
@@ -33,6 +71,21 @@ function loadJSON(path, callback) {
     }
     xobj.send(null);
 }
+
+
+function loadNET(path, callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/plain");
+    xobj.open('GET', path, true);
+    xobj.onreadystatechange = function () {
+	if (xobj.readyState === 4 && xobj.status === 200) {
+// .open will NOT return a value but simply returns undefined in async mode so use a callback
+	    callback(xobj.responseText);
+	}
+    }
+    xobj.send(null);
+}
+
 
 function isJson(str) {
     try {
