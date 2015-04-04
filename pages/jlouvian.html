@@ -59,7 +59,7 @@ and open the template in the editor.
 			target: 0,
 			weight: 1.0
 		    }]
-	    }
+	    };
 	    // els nodes poden començar desde 0...
 
 	    //Original node and edge data 
@@ -133,7 +133,15 @@ and open the template in the editor.
 
 
 	    // LOAD files.net
-	    var fileName = "real/dolphins.net";
+	    var files = [
+		"airports_UW",
+		"cat_cortex_sim",
+		"dolphins",
+		"football",
+		"zachary_unwh"
+	    ];
+	    var fileIdx = 4;
+	    var fileName = "real/"+files[fileIdx]+".net";
 	    var filePath = "../data/networks/" + fileName;
 
 
@@ -161,12 +169,13 @@ and open the template in the editor.
 			console.log(node_data, edge_data);
 			console.log(jsonData);
 			node_data = jsonData.Vertices.map(function (item, idx, all) {
-			    return(item);
+			    return(item-1);
 			});
 			edge_data = jsonData.Edges;
-			console.log(node_data, edge_data);
+			console.log(node_data);
+			console.log(edge_data);
 
-			// draw(node_data, edge_data);
+		  	draw(node_data, edge_data);
 		    } else {
 			console.log(node_data, edge_data);
 			draw(node_data, edge_data);
@@ -195,8 +204,8 @@ and open the template in the editor.
 
 //Drawing code
 
-		var width = 400,
-			height = 400;
+		var width = 500,
+			height = 500;
 
 		var original_node_data = d3.entries(ns);
 
@@ -213,7 +222,8 @@ and open the template in the editor.
 
 		var svg = d3.select("body").append("svg")
 			.attr("width", width)
-			.attr("height", height);
+			.attr("height", height)
+			.attr("border", 1);
 
 		force.nodes(original_node_data)
 			.links(es)
@@ -266,8 +276,11 @@ and open the template in the editor.
 
 		    console.log('Resulting Community Data', community_assignment_result);
 		    var max_community_number = 0;
+		    var maxComunity = 2;
 		    node_ids.forEach(function (d) {
-			original_node_data[d].community = community_assignment_result[d];
+			original_node_data[d].community = community_assignment_result[d]; //  asignació binaria
+			// original_node_data[d].community = community_assignment_result[d] % maxComunity; // asignació binaria
+			
 			max_community_number = max_community_number < community_assignment_result[d] ? community_assignment_result[d] : max_community_number;
 		    });
 

@@ -13,9 +13,9 @@ function pajekToJSON(str) {
     var json = {};
     var section = "";
 
-    var patt = /^[0-9].*$/
+    var patt = /^[0-9]/; // start with a number
     for (var key in list) {
-	if (list[key].search(patt) !== -1) {
+	if (list[key].trim().search(patt) !== -1) {
 	    // console.log(list[key])
 	    var line = list[key].match(/\S+/g);
 	    switch (section) {
@@ -24,19 +24,20 @@ function pajekToJSON(str) {
 		    break;
 		case "Edges":
 		    var edge = {
-			source: parseInt(line[0]),
-			target: parseInt(line[1]),
+			source: parseInt(line[0])-1,
+			target: parseInt(line[1])-1,
 			weight: parseInt(line[2])
 		    };
 		    json[section].push(edge);
-		    console.log(edge);
+		//    console.log(edge);
 		    break;
 		default :
 		    console.log("unhandled: " + section);
 		    break;
 	    }
 	} else {
-	    if (list[key] !== "") {
+		console.info({data: list[key]});
+	    if ( list[key] !== "") {
 		section = list[key].match(/[A-z]+/)[0];
 		console.log({data: section});
 		console.log(json);
