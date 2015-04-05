@@ -8,3 +8,11 @@ and open the template in the editor.
     Author     : anna
 */
 
+body {
+    margin: 0;
+}
+#container {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+} 
