@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+console.log("script Loaded!");
 
 function pajekToJSON(str) {
 
@@ -20,11 +21,11 @@ function pajekToJSON(str) {
 	    var line = list[key].match(/\S+/g);
 	    switch (section) {
 		case "Vertices":
-		    json[section].push(parseInt(line[0]));
+		    json[section].push(parseInt(line[0])-1); // offset -1 xk incia amb 0
 		    break;
 		case "Edges":
 		    var edge = {
-			source: parseInt(line[0])-1,
+			source: parseInt(line[0])-1,// offset -1 xk incia amb 0
 			target: parseInt(line[1])-1,
 			weight: parseInt(line[2])
 		    };
@@ -36,7 +37,7 @@ function pajekToJSON(str) {
 		    break;
 	    }
 	} else {
-		console.info({data: list[key]});
+		// console.info({data: list[key]});
 	    if ( list[key] !== "") {
 		section = list[key].match(/[A-z]+/)[0];
 		console.log({data: section});
