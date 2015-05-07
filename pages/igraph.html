@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-	<title>Linkurious Comunity Detection</title>
+	<title>igraph Comunity Detection</title>
 
 	<link rel="shortcut icon" href="../favicon.ico" >
 	<link rel="icon" href="../obrasinf.gif" type="image/gif" >
@@ -17,54 +17,62 @@ and open the template in the editor.
 	<script src="../js/jquery/jquery.js"></script>
 	<script src="../js/twitter-bootstrap/js/bootstrap.js"></script>
 	<script src="../js/d3/d3.v3.min.js"></script>
-	<script src="../js/linkurious/"></script>
+	<script src="../js/igraph/igraph.min.js"></script>
 	<script src="../js/script.js"></script>
 
 	<script src="../js/sigmajs/sigma.min.js"></script>
 	<!-- Style Dependency --> 
 	<link rel="stylesheet" href="../js/twitter-bootstrap/css/bootstrap.css">
-	<link rel="stylesheet" href="../css/linkurious.css"> 
+	<link rel="stylesheet" href="../css/igraph.css"> 
     </head>
     <body>
 	<div>Graphs are also called networks</div>
 
 	<a href="">Exaples & Tests</a>
-	<div id="container"></div>
+	<div id="my-selector"></div>
 	<script>
 	    // Let's first initialize sigma:
-	    var s = new sigma('container');
+	    console.log("igraph/ini");
+	    // INIT SETTING && INTERFACE
+	    options = {
+		directed: true, // Toggles edge arrows
+		nodeSize: 2.0, // Default node size
+		edgeSize: 0.25, // Edge connection diameter
+		arrowSize: 1.0, // If drawn, edge arrow size
+		defaultNodeColor: 0xaaaaaa, // Color for nodes without a "color" property
+		defaultEdgeColor: 0x777777, // Color for edges without a "color" property
+		shader: "toon", // three.js shader to use, can be "toon", "basic", "phong", or "lambert"
+		runOptimization: true // Runs a force-directed-layout algorithm on the graph
+	    };
+	    // LOAD DATA
 
-	    // Then, let's add some data to display:
-	    s.graph.addNode({
-		// Main attributes:
-		id: 'n0',
-		label: 'Hello',
-		// Display attributes:
-		x: 0,
-		y: 0,
-		size: 1,
-		color: '#f00'
-	    }).addNode({
-		// Main attributes:
-		id: 'n1',
-		label: 'World !',
-		// Display attributes:
-		x: 1,
-		y: 1,
-		size: 1,
-		color: '#00f'
-	    }).addEdge({
-		id: 'e0',
-		// Reference extremities:
-		source: 'n0',
-		target: 'n1'
-	    });
-	    s.settings({
-		edgeColor: 'default',
-		defaultEdgeColor: 'grey'
-	    });
-	    // Finally, let's ask our sigma instance to refresh:
-	    s.refresh();
+	    // graph data format
+	    var g = {
+		nodes: {
+		    jane: {},
+		    bob: {},
+		    mike: {},
+		    sally: {}
+		},
+		edges: [
+		    {source: "jane", target: "bob"},
+		    {source: "bob", target: "mike"},
+		    {source: "mike", target: "sally"}
+		]
+	    };
+
+// sha de fer amb python or R
+
+	    // node format
+
+
+
+
+	    // DRAW
+
+	    igraph.create('my-selector');
+	    igraph.draw(g);
+	    console.log("igraph/fin");
 	</script>
     </body>
 </html>

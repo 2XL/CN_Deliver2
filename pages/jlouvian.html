@@ -18,8 +18,10 @@ and open the template in the editor.
 	<script src="../js/twitter-bootstrap/js/bootstrap.js"></script>
 	<script src="../js/d3/d3.v3.min.js"></script>
 	<script src="../js/jLouvian/jLouvain.js"></script>
-	<script src="../js/script.js"></script>
 
+	<script src="../js/FileSaver.js"></script>
+	<script src="../js/script.js"></script>
+	<script src="../js/util.js"></script>
 	<!-- Style Dependency --> 
 	<link rel="stylesheet" href="../js/twitter-bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" href="../css/jlouvian.css"> 
@@ -36,6 +38,7 @@ and open the template in the editor.
 	<div id="content_wrapper">
 	    <input class="btn btn-warning" type="button" value="Reset" id='reset_btn' />  
 	    <input class="btn btn-success" type="button" value="Run Community Detection" id='comm_detect' />
+	    <input class="btn btn-info" type="button" value="Help" onclick="help()"/>
 	    <div id="selectData"></div>
 	</div> 
 
@@ -46,7 +49,25 @@ and open the template in the editor.
 
 	<!-- TODO: MAGIC -->
 	<script>
+
 	    console.log("pink unicorn exist!");
+
+	    function help() {
+		var msg = "url?id=# \n\
+0 airports_UW,			    \n\
+1 cat_cortex_sim,			    \n\
+2 dolphins,			    \n\
+3 football,			    \n\
+4 zachary_unwh, 			    			    \n\
+5 20x2-5x2,			    \n\
+6 graph3-1-3,			    \n\
+7 star,			    \n\
+8 graph4-4,   \n\
+9 256_4_4_2_15_18_p,			    \n\
+10 rb125,\n\
+11 256_4_4_4_13_18_p";
+		alert(msg);
+	    }
 
 	    // TODO 1 --> parse pajek.net to JSON
 	    var node_data;
@@ -69,7 +90,6 @@ and open the template in the editor.
 		31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
 		47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
 		63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73];
-
 	    //   console.log('Input Node Data', node_data);
 	    /*
 	     edge_data = [
@@ -101,10 +121,6 @@ and open the template in the editor.
 		edge_data = isJson(data)['data'];
 		// console.log('Input Edge Data', edge_data);
 	    });
-
-
-
-
 	    // TODO: list files form directory 
 	    // todo mongodb
 	    // by definition require async connections
@@ -128,31 +144,50 @@ and open the template in the editor.
 
 	    // TODO: parse files from .net to JSON then render
 
+	    var params = {};
+	    if (location.search) {
+		var parts = location.search.substring(1).split('&');
+		for (var i = 0; i < parts.length; i++) {
+		    var nv = parts[i].split('=');
+		    if (!nv[0])
+			continue;
+		    params[nv[0]] = nv[1] || true;
+		}
+	    }
 
-
-
-
+	    console.log(params);
 	    // LOAD files.net
 	    var files = [
+		// real
 		"airports_UW",
 		"cat_cortex_sim",
 		"dolphins",
 		"football",
-		"zachary_unwh"
+		"zachary_unwh",
+		// toy
+		"20x2-5x2",
+		"graph3-1-3",
+		"star",
+		"graph4-4",
+		// model
+		"256_4_4_2_15_18_p",
+		"rb125",
+		"256_4_4_4_13_18_p"
 	    ];
 	    var fileIdx = 4;
-	    var fileName = "real/"+files[fileIdx]+".net";
+	    if (params['id'] === undefined) {
+		fileIdx = Math.floor(Math.random() * files.length);
+	    } else {
+		fileIdx = params['id'];
+	    }
+
+
+	    var fileName = "test/" + files[fileIdx] + ".net";
 	    var filePath = "../data/networks/" + fileName;
-
-
 	    loadNET(filePath, function (data) {
 		jsonData = pajekToJSON(data);
 		console.log(jsonData);
 	    });
-
-
-
-
 	    var select = document.getElementById("selectData");
 	    // TODO: FileSystemAPIs
 
@@ -174,8 +209,7 @@ and open the template in the editor.
 			edge_data = jsonData.Edges;
 			console.log(node_data);
 			console.log(edge_data);
-
-		  	draw(node_data, edge_data);
+			draw(node_data, edge_data);
 		    } else {
 			console.log(node_data, edge_data);
 			draw(node_data, edge_data);
@@ -187,9 +221,6 @@ and open the template in the editor.
 		    clearInterval(loading);
 		}
 	    }, 1000);
-
-
-
 	    /*
 	     * Render the comunity with d3.js
 	     * @param {type} ns	Nodes
@@ -198,37 +229,28 @@ and open the template in the editor.
 	     */
 	    function draw(ns, es) {
 		console.log("draw/init");
-
-
 		var community = jLouvain().nodes(ns).edges(es);
-
 //Drawing code
 
 		var width = 500,
 			height = 500;
-
 		var original_node_data = d3.entries(ns);
-
 		var max_weight = d3.max(es, function (d) {
 		    return d.weight
 		});
 		var weight_scale = d3.scale.linear().domain([0, max_weight]).range([1, 5]);
-
 		// cool random force...
 		var force = d3.layout.force()
 			.charge(-30)
 			.linkDistance(20)
 			.size([width, height]);
-
 		var svg = d3.select("body").append("svg")
 			.attr("width", width)
 			.attr("height", height)
 			.attr("border", 1);
-
 		force.nodes(original_node_data)
 			.links(es)
 			.start();
-
 		var link = svg.selectAll(".link")
 			.data(es)
 			.enter().append("line")
@@ -236,7 +258,6 @@ and open the template in the editor.
 			.style("stroke-width", function (d) {
 			    return weight_scale(d.weight);
 			});
-
 		var node = svg.selectAll(".node")
 			.data(force.nodes())
 			.enter().append("circle")
@@ -244,7 +265,6 @@ and open the template in the editor.
 			.attr("r", 5)
 			.style("fill", '#a30500')
 			.call(force.drag);
-
 		force.on("tick", function () {
 		    link.attr("x1", function (d) {
 			return d.source.x;
@@ -258,7 +278,6 @@ and open the template in the editor.
 			    .attr("y2", function (d) {
 				return d.target.y;
 			    });
-
 		    node.attr("cx", function (d) {
 			return d.x;
 		    })
@@ -266,45 +285,35 @@ and open the template in the editor.
 				return d.y;
 			    });
 		});
-
 		d3.select('#comm_detect').on('click', function () {
 		    //Communnity detection on click event
 
 		    var community_assignment_result = community();
-
 		    var node_ids = Object.keys(community_assignment_result);
-
 		    console.log('Resulting Community Data', community_assignment_result);
 		    var max_community_number = 0;
 		    var maxComunity = 2;
 		    node_ids.forEach(function (d) {
 			original_node_data[d].community = community_assignment_result[d]; //  asignació binaria
 			// original_node_data[d].community = community_assignment_result[d] % maxComunity; // asignació binaria
-			
+
 			max_community_number = max_community_number < community_assignment_result[d] ? community_assignment_result[d] : max_community_number;
 		    });
-
 		    console.log(max_community_number);
-
+		    console.info("export PAJEK.clu");
+		    partitionToCluster(community_assignment_result, files[fileIdx] + ".clu");
 		    var color = d3.scale.category20().domain(d3.range([0, max_community_number]));
-
 		    d3.selectAll('.node')
 			    .data(original_node_data)
 			    .style('fill', function (d) {
 				return color(d.community);
 			    })
 		});
-
 		d3.select('#reset_btn').on('click', function () {
 		    d3.selectAll('.node')
 			    .data(original_node_data)
 			    .style('fill', '#a30500');
 		});
-
-
-
-
-
 		console.log("draw/end");
 	    }
 
