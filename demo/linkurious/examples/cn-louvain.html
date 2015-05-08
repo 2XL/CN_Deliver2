@@ -193,19 +193,48 @@
 
 	    // load data from .NET
 
+
+	    var params = {};
+	    if (location.search) {
+		var parts = location.search.substring(1).split('&');
+		for (var i = 0; i < parts.length; i++) {
+		    var nv = parts[i].split('=');
+		    if (!nv[0])
+			continue;
+		    params[nv[0]] = nv[1] || true;
+		}
+	    }
+
+	    console.log(params);
 	    // LOAD files.net
 	    var files = [
+		// real
 		"airports_UW",
 		"cat_cortex_sim",
 		"dolphins",
 		"football",
-		"zachary_unwh"
+		"zachary_unwh",
+		// toy
+		"20x2-5x2",
+		"graph3-1-3",
+		"star",
+		"graph4-4",
+		// model
+		"256_4_4_2_15_18_p",
+		"rb125",
+		"256_4_4_4_13_18_p"
 	    ];
-	    var fileIdx = 1;
-	    var fileName = "real/" + files[fileIdx] + ".net";
+	    var fileIdx = 4;
+	    if (params['id'] === undefined) {
+		fileIdx = Math.floor(Math.random() * files.length);
+	    } else {
+		fileIdx = params['id'];
+	    }
+	    
+	    var fileName = "test/" + files[fileIdx] + ".net";
 	    var filePath = "/data/networks/" + fileName;
 
-
+	 
 
 	    loadNET(filePath, function (data) {
 		var jsonData = pajekToJSON(data);
@@ -218,10 +247,8 @@
 	    function setupData(jsonData, callback) {
 		console.info("setupData");
 
-
 		N = jsonData.Vertices.length;
 		// Generate the graph:
-
 		// generate the comunitites?
 		for (i = 0; i < C; i++)
 		    cs.push({
@@ -252,14 +279,11 @@
 
 		    g.edges.push({
 			id: 'e' + i,
-			source: 'n'+edge.source,
-			target: 'n'+edge.target,
+			source: 'n' + edge.source,
+			target: 'n' + edge.target,
 			weight: edge.weight,
 			size: edge.weight
 		    });
-
-
-
 		    /*
 		     var w = Math.random();
 		     if (Math.random() < (1 - d))
@@ -288,14 +312,8 @@
 	    }
 
 
-
-
-
-
-
-
 // DRAW 
-	    function draw(level) { // haha variables globals everywhere...
+	    function draw() { // haha variables globals everywhere...
 		console.log("draw");
 		// Instantiate sigma:
 		s = new sigma({
@@ -319,7 +337,6 @@
 		});
 		sigma.layouts.startForceAtlas2();
 
-
 		var louvainInstance;
 
 		// Detect button
@@ -334,7 +351,8 @@
 
 		    var nbLevels = louvainInstance.countLevels();
 		    console.log(nbLevels); // num levels
-		    var partitions = level === undefined ? louvainInstance.getPartitions() : louvainInstance.getPartitions({level: level});
+		    // var partitions = (level === undefined) ? louvainInstance.getPartitions() : louvainInstance.getPartitions({level: nbLevels});
+		    var partitions = louvainInstance.getPartitions({level: 1});
 		    console.log(partitions); // num pertitions
 		    var nbPartitions = louvainInstance.countPartitions(partitions);
 		    console.log(nbPartitions);
